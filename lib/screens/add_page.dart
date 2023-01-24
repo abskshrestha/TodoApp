@@ -8,6 +8,8 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
+TextEditingController titleController = TextEditingController();
+TextEditingController descriptionController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,5 +53,11 @@ class _AddPageState extends State<AddPage> {
 
 //this is just to give it a start 
 //commit everyday
-
 //this is the only that is different from the previous commit
+
+void submitData() {
+  //get the data from the form
+  final title = 
+  //submit data to the  server
+  //show success of fail message based on status
+}
