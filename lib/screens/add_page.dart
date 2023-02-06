@@ -73,7 +73,10 @@ Future<void> submitData() async {
   //submit data to the  server
   final url = 'http://api.nstack.in/v1/todos'; //provided by backend dev
   final uri = Uri.parse(url); //convert url to uri
-  final response = await http.post(uri, body: body);
+  final response = await http.post(uri, body: 
+  jsonEncode(body))
+  ;
   //show success of fail message based on status
-  print(response);
- }
+  print(response.statusCode);
+  print(response.body);
+  }
