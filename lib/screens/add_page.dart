@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -6,11 +8,13 @@ class AddPage extends StatefulWidget {
   State<AddPage> createState() => _AddPageState();
 }
 
+TextEditingController titleController =
+    TextEditingController(); //controllers declaring as a top level variable
+TextEditingController descriptionController =
+    TextEditingController(); //controllers
+
 class _AddPageState extends State<AddPage> {
   @override
-  TextEditingController titleController = TextEditingController(); //controllers
-  TextEditingController descriptionController =
-      TextEditingController(); //controllers
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
@@ -43,7 +47,7 @@ class _AddPageState extends State<AddPage> {
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: submitData,
               child: const Text('Submit'),
             ),
           ]),
@@ -58,10 +62,12 @@ class _AddPageState extends State<AddPage> {
 //this is the only that is different from the previous commit
 
 Future<void> submitData() async {
+  //network call take some time so we use async and await
   //get the data from the form
-  var titleController;
+
+  // var titleController = TextEditingController();
   final title = titleController.text;
-  var descriptionController;
+  // var descriptionController = TextEditingController();
   final description = descriptionController.text;
 
   final body = {
@@ -71,14 +77,31 @@ Future<void> submitData() async {
   };
 
   //submit data to the  server
-  final url = 'http://api.nstack.in/v1/todos'; //provided by backend dev
-  final uri = Uri.parse(url); //convert url to uri
-  final response = await http.post(uri, body: 
-  jsonEncode(body))
-  ;
+  const url = 'http://api.nstack.in/v1/todos';
+
+  //provided by backend dev
+  final uri = Uri.parse(url); //convert url to uri locator to identifier
+  final response = await http.post(
+    uri,
+    body: jsonEncode(body),
+    headers: {'Content-Type': 'application/json'},
+  );
   //show success of fail message based on status
+
   print(response.statusCode);
   print(response.body);
+
+  if (response.statusCode == 201) {
+    print('Todo added successfully');
+  } else {
+    print('error');
+    print(response.body);
   }
+}
 
   //just to continue on the journey
+
+
+//idk why i understood most of it swagger api and all debugged that bug by wnsuring it is a top level variable above override
+//challenging fun nighttime code is good i guess
+
