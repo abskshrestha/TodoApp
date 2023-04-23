@@ -94,7 +94,7 @@ Future<void> submitData() async {
   if (response.statusCode == 201) {
     print('Todo added successfully');
   } else {
-    print('error');
+    print('creation failure');
     print(response.body);
   }
 }
@@ -105,3 +105,4 @@ Future<void> submitData() async {
 //idk why i understood most of it swagger api and all debugged that bug by wnsuring it is a top level variable above override
 //challenging fun nighttime code is good i guess
 
+//time stamp 18:00
