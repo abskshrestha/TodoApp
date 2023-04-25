@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-
-
 class AddPage extends StatefulWidget {
   @override
   State<AddPage> createState() => _AddPageState();
@@ -16,21 +14,13 @@ TextEditingController descriptionController =
     TextEditingController(); //controllers
 
 class _AddPageState extends State<AddPage> {
-  List items = [];
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fetchTodo();
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
       home: Scaffold(
-        
         appBar: AppBar(
             title: const Text('Add Todo'),
             leading: IconButton(
@@ -116,7 +106,6 @@ class _AddPageState extends State<AddPage> {
     }
   }
 
-
   void showSuccessMessage(String message) {
     final snackBar = SnackBar(content: Text(message));
 
@@ -143,19 +132,4 @@ class _AddPageState extends State<AddPage> {
 
 //time stamp 18:00
 
-  Future<void> fetchTodo() async {
-    //API get call
-    final url = 'https://api.nstack.in/v1/todos?page=1&limit=10';
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
-
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body) as Map;
-      final result = json['items'] as List;
-
-      setState(() {
-        items = result;
-      });
-    }
-  }
-}
+ }
