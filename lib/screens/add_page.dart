@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+
+
 class AddPage extends StatefulWidget {
   @override
   State<AddPage> createState() => _AddPageState();
@@ -14,11 +16,21 @@ TextEditingController descriptionController =
     TextEditingController(); //controllers
 
 class _AddPageState extends State<AddPage> {
+  List items = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchTodo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
       home: Scaffold(
+        
         appBar: AppBar(
             title: const Text('Add Todo'),
             leading: IconButton(
@@ -55,54 +67,95 @@ class _AddPageState extends State<AddPage> {
       ),
     );
   }
-}
 
 //this is just to give it a start
 //commit everyday
 //this is the only that is different from the previous commit
 
-Future<void> submitData() async {
-  //network call take some time so we use async and await
-  //get the data from the form
+  Future<void> submitData() async {
+    //network call take some time so we use async and await
+    //get the data from the form
 
-  // var titleController = TextEditingController();
-  final title = titleController.text;
-  // var descriptionController = TextEditingController();
-  final description = descriptionController.text;
+    // var titleController = TextEditingController();
+    final title = titleController.text;
+    // var descriptionController = TextEditingController();
+    final description = descriptionController.text;
 
-  final body = {
-    'title': title,
-    'description': description,
-    'isCompleted': false,
-  };
+    final body = {
+      'title': title,
+      'description': description,
+      'isCompleted': false,
+    };
 
-  //submit data to the  server
-  const url = 'http://api.nstack.in/v1/todos';
+    //submit data to the  server
+    const url = 'http://api.nstack.in/v1/todos';
 
-  //provided by backend dev
-  final uri = Uri.parse(url); //convert url to uri locator to identifier
-  final response = await http.post(
-    uri,
-    body: jsonEncode(body),
-    headers: {'Content-Type': 'application/json'},
-  );
-  //show success of fail message based on status
+    //provided by backend dev
+    final uri = Uri.parse(url); //convert url to uri locator to identifier
+    final response = await http.post(
+      uri,
+      body: jsonEncode(body),
+      headers: {'Content-Type': 'application/json'},
+    );
+    //show success of fail message based on status
 
-  print(response.statusCode);
-  print(response.body);
-
-  if (response.statusCode == 201) {
-    print('Todo added successfully');
-  } else {
-    print('creation failure');
+    print(response.statusCode);
     print(response.body);
+
+    if (response.statusCode == 201) {
+      titleController.text = ''; //resets the form
+
+      descriptionController.text = ''; //resets the form empty
+
+      print('Todo added successfully');
+
+      showSuccessMessage('Todo added successfully');
+    } else {
+      print('creation failure');
+      showErrorMessage('creation failure');
+    }
   }
-}
 
-  //just to continue on the journey
 
+  void showSuccessMessage(String message) {
+    final snackBar = SnackBar(content: Text(message));
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar); //show snackbar
+  }
+
+// need to make changes to make it work edit: kept inside materialapp and it worked
+
+  void showErrorMessage(String message) {
+    final snackBar = SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red);
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar); //show snackbar
+  }
+
+//just to continue on the journey
 
 //idk why i understood most of it swagger api and all debugged that bug by wnsuring it is a top level variable above override
 //challenging fun nighttime code is good i guess
 
 //time stamp 18:00
+
+  Future<void> fetchTodo() async {
+    //API get call
+    final url = 'https://api.nstack.in/v1/todos?page=1&limit=10';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map;
+      final result = json['items'] as List;
+
+      setState(() {
+        items = result;
+      });
+    }
+  }
+}
