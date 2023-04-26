@@ -4,17 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AddPage extends StatefulWidget {
+  final Map? todo;
+
+  AddPage({
+    Key? key,
+    this.todo,
+  }) : super(key: key);
+
   @override
   State<AddPage> createState() => _AddPageState();
 }
 
-TextEditingController titleController =
-    TextEditingController(); //controllers declaring as a top level variable
-TextEditingController descriptionController =
-    TextEditingController(); //controllers
-
 class _AddPageState extends State<AddPage> {
- 
+  TextEditingController titleController =
+      TextEditingController(); //controllers declaring as a top level variable
+  TextEditingController descriptionController =
+      TextEditingController(); //controllers
+
+  bool isEdit = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.todo != null) {
+      isEdit = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +38,7 @@ class _AddPageState extends State<AddPage> {
       theme: ThemeData.dark(),
       home: Scaffold(
         appBar: AppBar(
-            title: const Text('Add Todo'),
+            title: Text(isEdit ? 'Edit Page' : 'Add Todo'),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
@@ -49,8 +65,10 @@ class _AddPageState extends State<AddPage> {
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: submitData,
-              child: const Text('Submit'),
+              onPressed: 
+              isEdit? updateData : submitData,
+              child: Text(
+                isEdit? 'Update' : 'Submit'),
             ),
           ]),
         ),
@@ -132,4 +150,4 @@ class _AddPageState extends State<AddPage> {
 
 //time stamp 18:00
 
- }
+}
